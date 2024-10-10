@@ -80,6 +80,28 @@ class NewsletterByID(Resource):
 
         return response
 
+    def patch(self, id):
+        NLetter = Newsletter.query.filter(Newsletter.id == id).first()
+
+        for attr in request.form:
+            setattr(NLetter, attr, request.form[attr])
+        db.session.add(NLetter)
+        db.session.commit()
+
+        news_dict = NLetter.to_dict()
+        return make_response(news_dict, 200)
+
+    def delete(self, id):
+        NLetter = Newsletter.query.filter(Newsletter.id == id).first()
+
+        db.session.delete(NLetter)
+        db.session.commit()
+        
+        response_dict = {'Message':'Deleted Successfully'}
+
+        return make_response(response_dict, 200)
+
+
 api.add_resource(NewsletterByID, '/newsletters/<int:id>')
 
 
